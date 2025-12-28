@@ -90,3 +90,15 @@ button:disabled {
   font-weight: bold;
 }
 
+.penalty {
+  margin-top: 10px;
+  color: #ff2e2e;
+  font-weight: bold;
+  font-family: monospace;
+  text-shadow: 0 0 8px red;
+}
+
+.hidden {
+  display: none;
+}
+

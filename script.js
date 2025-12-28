@@ -56,6 +56,26 @@ if (savedDate !== today) {
   localStorage.setItem("xp", "0");
 }
 
+// ================= PENALTY SYSTEM =================
+
+const penaltyAppliedDate = localStorage.getItem("penaltyDate");
+const yesterdayTasks = JSON.parse(localStorage.getItem("completed")) || [];
+
+if (savedDate !== today && penaltyAppliedDate !== savedDate) {
+  const yesterdayIndex = new Date(savedDate).getDay();
+  const totalTasks = routines[yesterdayIndex]?.length || 0;
+
+  if (yesterdayTasks.length < totalTasks) {
+    // APPLY PENALTY
+    localStorage.setItem("xp", "0");
+    localStorage.setItem("currentStreak", "0");
+    localStorage.setItem("penaltyDate", savedDate);
+
+    const msg = document.getElementById("penaltyMsg");
+    if (msg) msg.classList.remove("hidden");
+  }
+}
+
 let completed = JSON.parse(localStorage.getItem("completed")) || [];
 let xp = parseInt(localStorage.getItem("xp")) || 0;
 
