@@ -102,3 +102,13 @@ button:disabled {
   display: none;
 }
 
+.level-rank {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #33ff33;
+  font-weight: bold;
+  font-family: monospace;
+  text-shadow: 0 0 6px #33ff33;
+}
+
+

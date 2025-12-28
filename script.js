@@ -81,6 +81,23 @@ let xp = parseInt(localStorage.getItem("xp")) || 0;
 
 document.getElementById("xp").innerText = xp;
 
+function updateLevelAndRank(xp) {
+  const xpPerLevel = 250; // 1 level = 250 XP
+  const levelsPerRank = 10; // 10 levels = 1 rank
+
+  let level = Math.floor(xp / xpPerLevel) + 1; // Level 1 start
+  let rankIndex = Math.floor((level - 1) / levelsPerRank);
+
+  const ranks = ["E", "D", "C", "B", "A", "S"];
+  let rank = ranks[Math.min(rankIndex, ranks.length - 1)]; // Max S
+
+  document.getElementById("level").innerText = level;
+  document.getElementById("rank").innerText = rank;
+}
+
+// Initial call
+updateLevelAndRank(xp);
+
 const dayIndex = new Date().getDay();
 document.getElementById("dayText").innerText =
   "Day " + (dayIndex + 1) + " Routine";
@@ -98,16 +115,15 @@ routines[dayIndex].forEach((task, index) => {
   if (completed.includes(index)) btn.disabled = true;
 
   btn.onclick = () => {
-    completed.push(index);
-    localStorage.setItem("completed", JSON.stringify(completed));
-    xp += 10;
-    localStorage.setItem("xp", xp);
-    location.reload();
-  };
+  completed.push(index);
+  localStorage.setItem("completed", JSON.stringify(completed));
+  xp += 10;
+  localStorage.setItem("xp", xp);
 
-  li.appendChild(btn);
-  taskList.appendChild(li);
-});
+  updateLevelAndRank(xp);
+
+  location.reload();
+};
 
 // ================= TIME + DAY =================
 
