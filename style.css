@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0b0b;
+  color: #fff;
+}
+
+.app {
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #ff0000;
+  text-shadow: 0 0 10px red;
+}
+
+#dayText {
+  color: #ff4d4d;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #1a1a1a;
+  border: 1px solid red;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  background: red;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+button:disabled {
+  background: #555;
+}
+
+.xp {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #ff3333;
+}
+
+.day-strip {
+  display: flex;
+  justify-content: space-between;
+  margin: 15px;
+}
+
+.day-strip div {
+  flex: 1;
+  margin: 2px;
+  padding: 10px 0;
+  border-radius: 10px;
+  background: #111;
+  color: #aaa;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.day-strip .active {
+  background: #1e90ff;
+  color: white;
+  box-shadow: 0 0 10px #1e90ff;
+}
+
+.time-box {
+  margin-top: 10px;
+  font-size: 18px;
+  color: #ddd;
+  text-align: center;
+}
