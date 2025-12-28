@@ -1,6 +1,42 @@
-alert("JS connected");
+console.log("JS connected");
 
-// ================= ROUTINES =================
+// ================= STREAK SYSTEM =================
+
+function getTodayDate() {
+  return new Date().toISOString().split("T")[0];
+}
+
+function updateStreak() {
+  let currentStreak = parseInt(localStorage.getItem("currentStreak")) || 0;
+  let highestStreak = parseInt(localStorage.getItem("highestStreak")) || 0;
+  let lastDate = localStorage.getItem("lastActiveDate");
+
+  const today = getTodayDate();
+
+  if (!lastDate) {
+    currentStreak = 1;
+  } else {
+    const diff =
+      (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
+
+    if (diff === 1) currentStreak++;
+    else if (diff > 1) currentStreak = 1;
+  }
+
+  if (currentStreak > highestStreak) highestStreak = currentStreak;
+
+  localStorage.setItem("currentStreak", currentStreak);
+  localStorage.setItem("highestStreak", highestStreak);
+  localStorage.setItem("lastActiveDate", today);
+
+  document.getElementById("currentStreak").innerText = currentStreak;
+  document.getElementById("highestStreak").innerText = highestStreak;
+}
+
+updateStreak();
+
+// ================= ROUTINE SYSTEM =================
+
 const routines = [
   ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
   ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
@@ -8,12 +44,11 @@ const routines = [
   ["Crunches (15×3)", "Leg Raise (12×3)", "Plank 30 sec (3 sets)", "Study 30 min (4 blocks)"],
   ["Squats (15×3)", "Step-Ups (10×3)", "Calf Raises (20×3)", "Study 30 min (4 blocks)"],
   ["Squats (15×3)", "Step-Ups (10×3)", "Calf Raises (20×3)", "Study 30 min (4 blocks)"],
-  ["Rest Day", "Study 30 min (5 blocks)"]
+  ["Rest Today", "Study 30 min (5 blocks)"],
 ];
 
-// ================= DAILY RESET =================
 const today = new Date().toDateString();
-const savedDate = localStorage.getItem("date");
+let savedDate = localStorage.getItem("date");
 
 if (savedDate !== today) {
   localStorage.setItem("date", today);
@@ -21,7 +56,6 @@ if (savedDate !== today) {
   localStorage.setItem("xp", "0");
 }
 
-// ================= XP & TASKS =================
 let completed = JSON.parse(localStorage.getItem("completed")) || [];
 let xp = parseInt(localStorage.getItem("xp")) || 0;
 
@@ -32,6 +66,7 @@ document.getElementById("dayText").innerText =
   "Day " + (dayIndex + 1) + " Routine";
 
 const taskList = document.getElementById("taskList");
+taskList.innerHTML = "";
 
 routines[dayIndex].forEach((task, index) => {
   const li = document.createElement("li");
@@ -43,64 +78,25 @@ routines[dayIndex].forEach((task, index) => {
   if (completed.includes(index)) btn.disabled = true;
 
   btn.onclick = () => {
-    if (!completed.includes(index)) {
-      completed.push(index);
-      xp += 10;
-
-      localStorage.setItem("completed", JSON.stringify(completed));
-      localStorage.setItem("xp", xp.toString());
-      location.reload();
-    }
+    completed.push(index);
+    localStorage.setItem("completed", JSON.stringify(completed));
+    xp += 10;
+    localStorage.setItem("xp", xp);
+    location.reload();
   };
 
   li.appendChild(btn);
   taskList.appendChild(li);
 });
 
-// ================= STREAK SYSTEM =================
-let currentStreak = parseInt(localStorage.getItem("currentStreak")) || 0;
-let highestStreak = parseInt(localStorage.getItem("highestStreak")) || 0;
-let lastActiveDate = localStorage.getItem("lastActiveDate");
+// ================= TIME + DAY =================
 
-const todayDate = new Date().toDateString();
-
-if (!lastActiveDate) {
-  // First time user
-  currentStreak = 1;
-} else {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (lastActiveDate === yesterday.toDateString()) {
-    // Continued streak
-    currentStreak += 1;
-  } else if (lastActiveDate !== todayDate) {
-    // Missed day
-    currentStreak = 1;
-  }
-}
-
-// Update highest streak
-if (currentStreak > highestStreak) {
-  highestStreak = currentStreak;
-}
-
-// Save
-localStorage.setItem("currentStreak", currentStreak);
-localStorage.setItem("highestStreak", highestStreak);
-localStorage.setItem("lastActiveDate", todayDate);
-
-// UI update
-document.getElementById("currentStreak").innerText = currentStreak;
-document.getElementById("highestStreak").innerText = highestStreak;
-
-// ================= DATE & TIME =================
 function updateDateTime() {
   const now = new Date();
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
   document.getElementById("realDay").innerText =
-    "📅 " + days[now.getDay()] + " | " + now.toLocaleDateString("en-IN");
+    "📅 " + days[now.getDay()] + " | " + now.toLocaleDateString();
 
   document.getElementById("realTime").innerText =
     "⏰ " + now.toLocaleTimeString();
@@ -110,12 +106,14 @@ updateDateTime();
 setInterval(updateDateTime, 1000);
 
 // ================= DAY STRIP =================
+
 const daysShort = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
+const todayIndex = new Date().getDay();
 const dayStrip = document.getElementById("dayStrip");
 
 daysShort.forEach((day, index) => {
   const d = document.createElement("div");
   d.innerText = day;
-  if (index === dayIndex) d.classList.add("active");
+  if (index === todayIndex) d.classList.add("active");
   dayStrip.appendChild(d);
 });
