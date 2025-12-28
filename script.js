@@ -1,7 +1,6 @@
 console.log("JS connected");
 
 // ================= STREAK SYSTEM =================
-
 function getTodayDate() {
   return new Date().toISOString().split("T")[0];
 }
@@ -16,8 +15,7 @@ function updateStreak() {
   if (!lastDate) {
     currentStreak = 1;
   } else {
-    const diff =
-      (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
+    const diff = (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
 
     if (diff === 1) currentStreak++;
     else if (diff > 1) currentStreak = 1;
@@ -36,7 +34,6 @@ function updateStreak() {
 updateStreak();
 
 // ================= ROUTINE SYSTEM =================
-
 const routines = [
   ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
   ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
@@ -48,7 +45,7 @@ const routines = [
 ];
 
 const today = new Date().toDateString();
-let savedDate = localStorage.getItem("date");
+let savedDate = localStorage.getItem("date") || today;
 
 if (savedDate !== today) {
   localStorage.setItem("date", today);
@@ -57,7 +54,6 @@ if (savedDate !== today) {
 }
 
 // ================= PENALTY SYSTEM =================
-
 const penaltyAppliedDate = localStorage.getItem("penaltyDate");
 const yesterdayTasks = JSON.parse(localStorage.getItem("completed")) || [];
 
@@ -71,8 +67,7 @@ if (savedDate !== today && penaltyAppliedDate !== savedDate) {
     localStorage.setItem("currentStreak", "0");
     localStorage.setItem("penaltyDate", savedDate);
 
-    const msg = document.getElementById("penaltyMsg");
-    if (msg) msg.classList.remove("hidden");
+    document.getElementById("penaltyMsg").classList.remove("hidden");
   }
 }
 
@@ -85,11 +80,11 @@ function updateLevelAndRank(xp) {
   const xpPerLevel = 250; // 1 level = 250 XP
   const levelsPerRank = 10; // 10 levels = 1 rank
 
-  let level = Math.floor(xp / xpPerLevel) + 1; // Level 1 start
+  let level = Math.floor(xp / xpPerLevel) + 1;
   let rankIndex = Math.floor((level - 1) / levelsPerRank);
 
   const ranks = ["E", "D", "C", "B", "A", "S"];
-  let rank = ranks[Math.min(rankIndex, ranks.length - 1)]; // Max S
+  let rank = ranks[Math.min(rankIndex, ranks.length - 1)];
 
   document.getElementById("level").innerText = level;
   document.getElementById("rank").innerText = rank;
@@ -115,18 +110,26 @@ routines[dayIndex].forEach((task, index) => {
   if (completed.includes(index)) btn.disabled = true;
 
   btn.onclick = () => {
-  completed.push(index);
-  localStorage.setItem("completed", JSON.stringify(completed));
-  xp += 10;
-  localStorage.setItem("xp", xp);
+    if (!completed.includes(index)) {
+      completed.push(index);
+      localStorage.setItem("completed", JSON.stringify(completed));
 
-  updateLevelAndRank(xp);
+      xp += 10;
+      localStorage.setItem("xp", xp);
+      document.getElementById("xp").innerText = xp;
 
-  location.reload();
-};
+      updateLevelAndRank(xp);
+
+      btn.innerText = "✔ DONE";
+      btn.disabled = true;
+    }
+  };
+
+  li.appendChild(btn);
+  taskList.appendChild(li);
+});
 
 // ================= TIME + DAY =================
-
 function updateDateTime() {
   const now = new Date();
   const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -142,7 +145,6 @@ updateDateTime();
 setInterval(updateDateTime, 1000);
 
 // ================= DAY STRIP =================
-
 const daysShort = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
 const todayIndex = new Date().getDay();
 const dayStrip = document.getElementById("dayStrip");
