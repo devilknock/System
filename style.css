@@ -41,19 +41,6 @@ li {
   border-radius: 8px;
 }
 
-button {
-  background: red;
-  border: none;
-  color: white;
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-button:disabled {
-  background: #444;
-}
-
 .xp {
   margin-top: 20px;
   font-size: 18px;
@@ -109,4 +96,18 @@ button:disabled {
   font-weight: bold;
   font-family: monospace;
   text-shadow: 0 0 6px #33ff33;
+}
+
+/* CHECK BOX FOR TASK */
+.check-box {
+  width: 18px;
+  height: 18px;
+  border: 2px solid red;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 6px red;
+}
+
+.check-box:hover {
+  background: red;
 }

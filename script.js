@@ -102,14 +102,19 @@ taskList.innerHTML = "";
 
 routines[dayIndex].forEach((task, index) => {
   const li = document.createElement("li");
-  li.innerText = task;
 
-  const btn = document.createElement("button");
-  btn.innerText = completed.includes(index) ? "✔ DONE" : "DONE";
+  const taskText = document.createElement("span");
+  taskText.innerText = task;
 
-  if (completed.includes(index)) btn.disabled = true;
+  const box = document.createElement("div");
+  box.classList.add("check-box");
 
-  btn.onclick = () => {
+  if (completed.includes(index)) {
+    box.style.display = "none";
+    taskText.innerText = task + " ✔ COMPLETED";
+  }
+
+  box.onclick = () => {
     if (!completed.includes(index)) {
       completed.push(index);
       localStorage.setItem("completed", JSON.stringify(completed));
@@ -117,15 +122,15 @@ routines[dayIndex].forEach((task, index) => {
       xp += 10;
       localStorage.setItem("xp", xp);
       document.getElementById("xp").innerText = xp;
-
       updateLevelAndRank(xp);
 
-      btn.innerText = "✔ DONE";
-      btn.disabled = true;
+      box.style.display = "none";
+      taskText.innerText = task + " ✔ COMPLETED";
     }
   };
 
-  li.appendChild(btn);
+  li.appendChild(taskText);
+  li.appendChild(box);
   taskList.appendChild(li);
 });
 
