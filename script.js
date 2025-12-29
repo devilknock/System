@@ -1,51 +1,32 @@
-console.log("JS connected");
+console.log("SystemX Loaded");
 
-// ================= STREAK SYSTEM =================
+// ================= HELPERS =================
 function getTodayDate() {
   return new Date().toISOString().split("T")[0];
 }
 
-function updateStreak() {
-  let currentStreak = parseInt(localStorage.getItem("currentStreak")) || 0;
-  let highestStreak = parseInt(localStorage.getItem("highestStreak")) || 0;
-  let lastDate = localStorage.getItem("lastActiveDate");
+// ================= DAYS =================
+const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const dayIndex = new Date().getDay();
 
-  const today = getTodayDate();
-
-  if (!lastDate) {
-    currentStreak = 1;
-  } else {
-    const diff = (new Date(today) - new Date(lastDate)) / (1000 * 60 * 60 * 24);
-
-    if (diff === 1) currentStreak++;
-    else if (diff > 1) currentStreak = 1;
-  }
-
-  if (currentStreak > highestStreak) highestStreak = currentStreak;
-
-  localStorage.setItem("currentStreak", currentStreak);
-  localStorage.setItem("highestStreak", highestStreak);
-  localStorage.setItem("lastActiveDate", today);
-
-  document.getElementById("currentStreak").innerText = currentStreak;
-  document.getElementById("highestStreak").innerText = highestStreak;
-}
-
-updateStreak();
-
-// ================= ROUTINE SYSTEM =================
+// ================= ROUTINES (CALENDAR BASED) =================
 const routines = [
-  ["Rest", "Study: 30 mins (5 blocks)"],
-  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30mins(4 Blocks)"],
-  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30mins(4 Blocks)"],
-  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Planks: (30sec ×3)", "Study: 30mins(4Blocks)"],
-  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Planks: (30sec ×3)", "Study: 30mins(4Blocks)"],
-  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf-Raises: (20×3)", "Study: 30mins (4Blocks)"],
-  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf-Raises: (20×3)", "Study: 30mins (4Blocks)"],
+  ["Rest", "Study: 30 mins (5 Blocks)"], // Sunday
+  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30 mins (4 Blocks)"], // Monday
+  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30 mins (4 Blocks)"], // Tuesday
+  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Plank: (30s×3)", "Study: 30 mins (4 Blocks)"], // Wednesday
+  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Plank: (30s×3)", "Study: 30 mins (4 Blocks)"], // Thursday
+  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf Raises: (20×3)", "Study: 30 mins (4 Blocks)"], // Friday
+  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf Raises: (20×3)", "Study: 30 mins (4 Blocks)"] // Saturday
 ];
 
-const today = new Date().toDateString();
-let savedDate = localStorage.getItem("date") || today;
+// ================= DAILY QUEST TEXT =================
+document.getElementById("dayText").innerText =
+  days[dayIndex] + " Daily Quest";
+
+// ================= DAILY RESET =================
+const today = getTodayDate();
+const savedDate = localStorage.getItem("date");
 
 if (savedDate !== today) {
   localStorage.setItem("date", today);
@@ -53,65 +34,42 @@ if (savedDate !== today) {
   localStorage.setItem("xp", "0");
 }
 
-// ================= PENALTY SYSTEM =================
-const penaltyAppliedDate = localStorage.getItem("penaltyDate");
-const yesterdayTasks = JSON.parse(localStorage.getItem("completed")) || [];
-
-if (savedDate !== today && penaltyAppliedDate !== savedDate) {
-  const yesterdayIndex = new Date(savedDate).getDay();
-  const totalTasks = routines[yesterdayIndex]?.length || 0;
-
-  if (yesterdayTasks.length < totalTasks) {
-    // APPLY PENALTY
-    localStorage.setItem("xp", "0");
-    localStorage.setItem("currentStreak", "0");
-    localStorage.setItem("penaltyDate", savedDate);
-
-    document.getElementById("penaltyMsg").classList.remove("hidden");
-  }
-}
-
+// ================= XP / LEVEL / RANK =================
 let completed = JSON.parse(localStorage.getItem("completed")) || [];
 let xp = parseInt(localStorage.getItem("xp")) || 0;
 
 document.getElementById("xp").innerText = xp;
 
 function updateLevelAndRank(xp) {
-  const xpPerLevel = 250; // 1 level = 250 XP
-  const levelsPerRank = 10; // 10 levels = 1 rank
+  const xpPerLevel = 250;
+  const levelsPerRank = 10;
+  const ranks = ["E","D","C","B","A","S"];
 
   let level = Math.floor(xp / xpPerLevel) + 1;
   let rankIndex = Math.floor((level - 1) / levelsPerRank);
 
-  const ranks = ["E", "D", "C", "B", "A", "S"];
-  let rank = ranks[Math.min(rankIndex, ranks.length - 1)];
-
   document.getElementById("level").innerText = level;
-  document.getElementById("rank").innerText = rank;
+  document.getElementById("rank").innerText =
+    ranks[Math.min(rankIndex, ranks.length - 1)];
 }
-
-// Initial call
 updateLevelAndRank(xp);
 
-const dayIndex = new Date().getDay();
-document.getElementById("dayText").innerText =
-  "Day " + (dayIndex + 1) + " Routine";
-
+// ================= TASK LIST =================
 const taskList = document.getElementById("taskList");
 taskList.innerHTML = "";
 
 routines[dayIndex].forEach((task, index) => {
   const li = document.createElement("li");
 
-  const taskText = document.createElement("span");
-  taskText.innerText = task;
+  const text = document.createElement("span");
+  text.innerText = task;
 
   const box = document.createElement("div");
-  box.classList.add("check-box");
+  box.className = "check-box";
 
   if (completed.includes(index)) {
     box.style.display = "none";
-    taskText.innerText = task + " ✔ COMPLETED";
+    text.innerText = task + " ✔ COMPLETED";
   }
 
   box.onclick = () => {
@@ -125,38 +83,61 @@ routines[dayIndex].forEach((task, index) => {
       updateLevelAndRank(xp);
 
       box.style.display = "none";
-      taskText.innerText = task + " ✔ COMPLETED";
+      text.innerText = task + " ✔ COMPLETED";
+
+      checkStreak();
     }
   };
 
-  li.appendChild(taskText);
+  li.appendChild(text);
   li.appendChild(box);
   taskList.appendChild(li);
 });
 
-// ================= TIME + DAY =================
-function updateDateTime() {
-  const now = new Date();
-  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+// ================= STREAK SYSTEM =================
+function checkStreak() {
+  if (completed.length === routines[dayIndex].length) {
+    const today = getTodayDate();
+    const last = localStorage.getItem("lastStreakDate");
 
+    if (last !== today) {
+      let streak = parseInt(localStorage.getItem("currentStreak")) || 0;
+      let highest = parseInt(localStorage.getItem("highestStreak")) || 0;
+
+      streak++;
+      if (streak > highest) highest = streak;
+
+      localStorage.setItem("currentStreak", streak);
+      localStorage.setItem("highestStreak", highest);
+      localStorage.setItem("lastStreakDate", today);
+
+      document.getElementById("currentStreak").innerText = streak;
+      document.getElementById("highestStreak").innerText = highest;
+    }
+  }
+}
+
+document.getElementById("currentStreak").innerText =
+  localStorage.getItem("currentStreak") || 0;
+document.getElementById("highestStreak").innerText =
+  localStorage.getItem("highestStreak") || 0;
+
+// ================= TIME =================
+function updateTime() {
+  const now = new Date();
   document.getElementById("realDay").innerText =
     "📅 " + days[now.getDay()] + " | " + now.toLocaleDateString();
-
   document.getElementById("realTime").innerText =
     "⏰ " + now.toLocaleTimeString();
 }
-
-updateDateTime();
-setInterval(updateDateTime, 1000);
+updateTime();
+setInterval(updateTime, 1000);
 
 // ================= DAY STRIP =================
-const daysShort = ["SUN","MON","TUE","WED","THU","FRI","SAT"];
-const todayIndex = new Date().getDay();
-const dayStrip = document.getElementById("dayStrip");
-
-daysShort.forEach((day, index) => {
-  const d = document.createElement("div");
-  d.innerText = day;
-  if (index === todayIndex) d.classList.add("active");
-  dayStrip.appendChild(d);
+const strip = document.getElementById("dayStrip");
+days.forEach((d,i)=>{
+  const el = document.createElement("div");
+  el.innerText = d.slice(0,3).toUpperCase();
+  if(i === dayIndex) el.classList.add("active");
+  strip.appendChild(el);
 });

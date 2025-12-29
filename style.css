@@ -1,8 +1,8 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
   background: #0b0b0b;
-  color: #fff;
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
 .app {
@@ -16,13 +16,13 @@ h1 {
 }
 
 .time-box {
-  margin-bottom: 10px;
   color: #ccc;
 }
 
 #dayText {
   color: #ff4d4d;
-  margin: 10px 0;
+  margin: 12px 0;
+  font-weight: bold;
 }
 
 ul {
@@ -35,22 +35,19 @@ li {
   border: 1px solid red;
   padding: 15px;
   margin-bottom: 10px;
+  border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 8px;
 }
 
 .xp {
-  margin-top: 20px;
-  font-size: 18px;
   color: #ff3333;
+  font-size: 18px;
 }
 
-/* DAY STRIP */
 .day-strip {
   display: flex;
-  justify-content: space-between;
   margin: 15px 0;
 }
 
@@ -58,10 +55,9 @@ li {
   flex: 1;
   margin: 3px;
   padding: 10px 0;
-  border-radius: 10px;
   background: #111;
   color: #aaa;
-  font-size: 14px;
+  border-radius: 10px;
 }
 
 .day-strip .active {
@@ -71,34 +67,17 @@ li {
 }
 
 .streak {
-  margin-top: 15px;
-  font-size: 16px;
   color: #ffaa00;
   font-weight: bold;
-}
-
-.penalty {
-  margin-top: 10px;
-  color: #ff2e2e;
-  font-weight: bold;
-  font-family: monospace;
-  text-shadow: 0 0 8px red;
-}
-
-.hidden {
-  display: none;
+  margin-top: 15px;
 }
 
 .level-rank {
-  margin-top: 20px;
-  font-size: 16px;
   color: #33ff33;
   font-weight: bold;
-  font-family: monospace;
-  text-shadow: 0 0 6px #33ff33;
+  margin-top: 15px;
 }
 
-/* CHECK BOX FOR TASK */
 .check-box {
   width: 18px;
   height: 18px;
