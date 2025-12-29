@@ -1,107 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SystemX - Elite Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROTOCOL-01 | Arise</title>
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #007bff;
+            --bg: #050505;
+            --card: #0d1117;
+            --text-dim: #555;
+            --rank-color: #ffffff;
+        } 
+        body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
+        .app { width: 100%; max-width: 400px; padding: 20px; padding-bottom: 100px; }
+        .header-section { text-align: center; margin-bottom: 20px; }
+        .logo { color: var(--primary); text-shadow: 0 0 30px rgba(0, 210, 255, 0.6); font-size: 3rem; font-weight: 900; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
+        .rank-badge-top { font-size: 1.2rem; font-weight: 900; color: var(--rank-color); text-shadow: 0 0 15px var(--rank-color); margin: 5px 0; letter-spacing: 2px; text-transform: uppercase; }
+        .days-strip { display: flex; justify-content: space-around; background: #111; padding: 12px 5px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
+        .day { font-size: 0.75rem; color: var(--text-dim); font-weight: 800; }
+        .day.active-day { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+        .streak-badge { background: #1a1a1a; border: 1px solid #ffaa00; color: #ffaa00; padding: 6px 20px; border-radius: 25px; font-weight: bold; font-size: 0.85rem; display: block; width: fit-content; margin: 0 auto 25px auto; text-transform: uppercase; }
+        .status-card { background: var(--card); padding: 20px; border-radius: 25px; border: 1px solid #1f2937; margin-bottom: 20px; }
+        .status-header { display: flex; justify-content: space-around; font-weight: bold; font-size: 1rem; }
+        .progress-container { width: 100%; height: 8px; background: #000; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s; }
+        ul { padding: 0; list-style: none; }
+        li { background: #0d1117; margin-bottom: 12px; padding: 18px; border-radius: 15px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); align-items: center; cursor: pointer; }
+        .completed-item { opacity: 0.2; filter: grayscale(1); border-left-color: #333 !important; }
+        .check-box { width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 50%; }
+        .completed-item .check-box { background: var(--primary); }
+        .player-card { border: 2px solid var(--rank-color) !important; text-align: center; }
+        .stat-label { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        .timer-box { background: rgba(255,255,255,0.02); padding: 40px 20px; border-radius: 30px; text-align: center; border: 1px solid #222; }
+        #countdownDisplay { font-size: 4.5rem; font-family: monospace; text-shadow: 0 0 25px var(--primary); margin-bottom: 20px; }
+        .timer-input { background: #000; border: 1px solid var(--primary); color: white; padding: 10px; width: 60px; text-align: center; border-radius: 10px; font-size: 1.1rem; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
+        .nav-item { text-align: center; color: #444; cursor: pointer; font-size: 0.75rem; }
+        .nav-item.active { color: var(--primary); }
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-<div id="systemOverlay" class="overlay hidden">
-    <div class="overlay-content">
-        <p class="system-label">[ SYSTEM NOTIFICATION ]</p>
-        <p id="systemNotice" class="typing-text"></p>
-        <p class="tap-to-close">TAP TO DISMISS</p>
-    </div>
-</div>
+    <div class="app">
+        <div id="mainHeader" class="header-section">
+            <h1 class="logo">PROTOCOL</h1>
+            <div id="rankBadgeTop" class="rank-badge-top">RANK E</div>
+        </div>
 
-<div class="app">
-  
-  <div id="questPage" class="page">
-    <h1 class="logo">SystemX</h1>
-    <div class="top-bar">
-      <div class="streak-group">
-        <span class="badge streak">🔥 <span id="currentStreak">0</span></span>
-        <span class="badge highest">🏆 <span id="highestStreak">0</span></span>
-      </div>
-    </div>
-    <div class="day-strip" id="dayStrip"></div>
-    <div class="status-card">
-        <div class="status-row">
-          <span>👑 Level: <span id="level">1</span></span>
-          <span>🏅 Rank: <span id="rank">E</span></span>
+        <div id="daysStrip" class="days-strip">
+            <div class="day" id="d-0">SUN</div><div class="day" id="d-1">MON</div><div class="day" id="d-2">TUE</div><div class="day" id="d-3">WED</div><div class="day" id="d-4">THU</div><div class="day" id="d-5">FRI</div><div class="day" id="d-6">SAT</div>
         </div>
-        <div class="progress-container">
-          <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <p class="xp-mini">XP: <span id="xp">0</span> / 250</p>
-    </div>
-    <h2 class="quest-label">DAILY QUEST</h2>
-    <ul id="taskList"></ul>
-  </div>
 
-  <div id="profilePage" class="page hidden">
-    <h1 class="logo">Player HQ</h1>
-    <div class="profile-card">
-        <div class="avatar-circle">👤</div>
-        <h2 id="playerRankDisplay">Hunter [Rank E]</h2>
-    </div>
-    <div class="stats-grid">
-        <div class="stat-box">
-            <span class="stat-name">STRENGTH</span>
-            <span id="statStr" class="stat-value">0</span>
-        </div>
-        <div class="stat-box">
-            <span class="stat-name">INTEL</span>
-            <span id="statInt" class="stat-value">0</span>
-        </div>
-    </div>
-    <div class="info-list">
-        <div class="info-item"><span>Total XP:</span> <span id="totalXpDisplay">0</span></div>
-        <div class="info-item"><span>Quests Cleared:</span> <span id="questsDone">0</span></div>
-        <div class="info-item"><span>Status:</span> <span style="color:#00ffcc">Awakened</span></div>
-    </div>
-  </div>
+        <div id="streakBadge" class="streak-badge">🔥 STREAK: <span id="streakVal">0</span> DAYS</div>
 
-  <div id="timerPage" class="page hidden">
-    <h1 class="logo" style="color: #00ffcc;">Focus Gate</h1>
-    <div class="timer-container-new">
-        <div class="glass-display">
-            <div class="label-top">TIME REMAINING</div>
-            <div id="countdownDisplay">25:00</div>
-            <div class="power-bar-bg">
-                <div id="powerFill" class="power-bar-fill"></div>
+        <div id="questPage" class="page">
+            <div class="status-card">
+                <div class="status-header">
+                    <span>LVL: <span id="level">1</span></span>
+                    <span>XP: <span id="xpDisp">0/250</span></span>
+                </div>
+                <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
+            </div>
+            <h3 id="dayTitle" style="color:var(--secondary); text-align:center; margin-bottom:15px; font-size:0.8rem; letter-spacing:2px; text-transform: uppercase;"></h3>
+            <ul id="taskList"></ul>
+        </div>
+
+        <div id="timerPage" class="page hidden">
+            <div class="timer-box">
+                <div id="tInputArea" style="margin-bottom: 20px;">
+                    <span style="font-size: 0.8rem; color: var(--text-dim);">FOCUS DURATION (MIN)</span><br><br>
+                    <input type="number" id="userMins" class="timer-input" value="25">
+                </div>
+                <div id="countdownDisplay">25:00</div>
+                <button onclick="handleTimer()" id="tBtn" style="background:var(--primary); border:none; padding:15px 45px; border-radius:12px; font-weight:900; color:black;">ENGAGE</button>
             </div>
         </div>
-        <div class="preset-grid">
-            <button onclick="setPreset(15)">15m</button>
-            <button onclick="setPreset(25)">25m</button>
-            <button onclick="setPreset(45)">45m</button>
-            <button onclick="setPreset(60)">60m</button>
+
+        <div id="profilePage" class="page hidden">
+            <div class="status-card player-card">
+                <p class="stat-label">CURRENT PLAYER STATUS</p>
+                <h2 id="pRank" style="font-size: 2.5rem; margin: 10px 0; letter-spacing: 5px;">RANK E</h2>
+                <div style="display: flex; justify-content: space-around; border-top: 1px solid #222; padding-top: 15px;">
+                    <div><p class="stat-label">LEVEL</p><div id="pLevel" style="font-size: 1.5rem; font-weight: 900;">1</div></div>
+                    <div><p class="stat-label">STREAK</p><div id="pStreak" style="font-size: 1.5rem; font-weight: 900; color: #ffaa00;">0</div></div>
+                </div>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div class="status-card" style="text-align:center;"><p class="stat-label">STRENGTH</p><h2 id="sStr" style="color:var(--primary); margin:5px 0;">0</h2></div>
+                <div class="status-card" style="text-align:center;"><p class="stat-label">INTEL</p><h2 id="sInt" style="color:var(--primary); margin:5px 0;">0</h2></div>
+            </div>
+            <div class="status-card" style="text-align:center;"><p class="stat-label">TOTAL XP</p><div id="pTotalXp" style="font-weight: bold; margin-top:10px; color: var(--secondary);">0 XP</div></div>
         </div>
-        <div class="control-panel">
-            <input type="number" id="customMin" value="25" min="1">
-            <button id="initiateBtn" onclick="toggleTimer()">ENGAGE</button>
-        </div>
-        <p class="status-text">SYSTEM STATUS: <span id="syncStatus">IDLE</span></p>
-    </div>
-  </div>
 
-  <nav class="nav-bar">
-    <div id="navQuest" class="nav-item active" onclick="switchPage('questPage')">
-        <span>📜</span><p>Quest</p>
+        <nav class="nav-bar">
+            <div class="nav-item active" onclick="switchPage('questPage', this)">📜<p>Quest</p></div>
+            <div class="nav-item" onclick="switchPage('timerPage', this)">⏱<p>Focus</p></div>
+            <div class="nav-item" onclick="switchPage('profilePage', this)">👤<p>Stats</p></div>
+        </nav>
     </div>
-    <div id="navTimer" class="nav-item" onclick="switchPage('timerPage')">
-        <span>⏱</span><p>Focus</p>
-    </div>
-    <div id="navProfile" class="nav-item" onclick="switchPage('profilePage')">
-        <span>👤</span><p>Profile</p>
-    </div>
-  </nav>
 
-</div>
+<script>
+    // --- FORCE RESET LOGIC (One-time use) ---
+    if(!localStorage.getItem("systemCleaned_v2")) {
+        localStorage.clear();
+        localStorage.setItem("systemCleaned_v2", "true");
+    }
 
-<script src="script.js"></script>
+    const ranks = [
+        { name: "RANK E", minLvl: 1, color: "#ffffff", multiplier: 1 },
+        { name: "RANK D", minLvl: 11, color: "#4ade80", multiplier: 1.5 },
+        { name: "RANK C", minLvl: 21, color: "#3b82f6", multiplier: 2 },
+        { name: "RANK B", minLvl: 31, color: "#a855f7", multiplier: 2.5 },
+        { name: "RANK A", minLvl: 41, color: "#f97316", multiplier: 3 },
+        { name: "RANK S", minLvl: 51, color: "#ef4444", multiplier: 5 }
+    ];
+
+    const baseTasks = {
+        0: [{n: "Rest Day", t: "INT", v: 1}, {n: "Read", t: "INT", v: 15}, {n: "Plan", t: "INT", v: 1}],
+        1: [{n: "Pushups", t: "STR", v: 30}, {n: "Pullups", t: "STR", v: 5}, {n: "Dips", t: "STR", v: 10}],
+        2: [{n: "Squats", t: "STR", v: 30}, {n: "Lunges", t: "STR", v: 20}, {n: "Plank(S)", t: "STR", v: 60}],
+        3: [{n: "Study(M)", t: "INT", v: 45}, {n: "DSA", t: "INT", v: 1}, {n: "News", t: "INT", v: 1}],
+        4: [{n: "Burpees", t: "STR", v: 15}, {n: "Shadow Box", t: "STR", v: 5}, {n: "Jumps", t: "STR", v: 20}],
+        5: [{n: "Deadlift", t: "STR", v: 10}, {n: "Biceps", t: "STR", v: 15}, {n: "Hammers", t: "STR", v: 15}],
+        6: [{n: "Meditate", t: "INT", v: 10}, {n: "Yoga", t: "INT", v: 1}, {n: "Walk(KM)", t: "STR", v: 3}]
+    };
+
+    let xp = parseInt(localStorage.getItem("xp")) || 0;
+    let str = parseInt(localStorage.getItem("statStr")) || 0;
+    let intel = parseInt(localStorage.getItem("statInt")) || 0;
+    let streak = parseInt(localStorage.getItem("streak")) || 0;
+    let completed = JSON.parse(localStorage.getItem("completed")) || [];
+
+    if (localStorage.getItem("lastDate") !== new Date().toDateString()) {
+        completed = [];
+        localStorage.setItem("completed", JSON.stringify([]));
+        localStorage.setItem("lastDate", new Date().toDateString());
+    }
+
+    function getCurrentRank() {
+        let lvl = Math.floor(xp / 250) + 1;
+        return ranks.slice().reverse().find(r => lvl >= r.minLvl) || ranks[0];
+    }
+
+    function updateUI() {
+        let lvl = Math.floor(xp / 250) + 1;
+        let prog = xp % 250;
+        let currentRank = getCurrentRank();
+        document.documentElement.style.setProperty('--rank-color', currentRank.color);
+        document.getElementById("level").innerText = lvl;
+        document.getElementById("xpDisp").innerText = `${prog}/250`;
+        document.getElementById("progressBar").style.width = (prog/250*100) + "%";
+        document.getElementById("streakVal").innerText = streak;
+        document.getElementById("rankBadgeTop").innerText = currentRank.name;
+        document.getElementById("rankBadgeTop").style.color = currentRank.color;
+        document.getElementById("pRank").innerText = currentRank.name;
+        document.getElementById("pRank").style.color = currentRank.color;
+        document.getElementById("pLevel").innerText = lvl;
+        document.getElementById("pStreak").innerText = streak;
+        document.getElementById("sStr").innerText = str;
+        document.getElementById("sInt").innerText = intel;
+        document.getElementById("pTotalXp").innerText = xp + " XP";
+    }
+
+    function renderTasks() {
+        const list = document.getElementById("taskList");
+        const dayIdx = new Date().getDay();
+        const currentRank = getCurrentRank();
+        const tasks = baseTasks[dayIdx];
+        list.innerHTML = "";
+        document.querySelectorAll('.day').forEach(d => d.classList.remove('active-day'));
+        document.getElementById(`d-${dayIdx}`).classList.add('active-day');
+        document.getElementById("dayTitle").innerText = "DAILY QUESTS";
+
+        tasks.forEach((task, i) => {
+            const li = document.createElement("li");
+            if(completed.includes(i)) li.classList.add("completed-item");
+            let val = Math.ceil(task.v * currentRank.multiplier);
+            li.innerHTML = `<div><small style="color:var(--primary)">${task.t}</small><br><b>${task.n}: ${val}</b></div><div class="check-box"></div>`;
+            li.onclick = () => {
+                if(completed.includes(i)) return;
+                completed.push(i);
+                task.t === "STR" ? str += 10 : intel += 10;
+                xp += 20; // 20 XP per task
+                if(completed.length === tasks.length) {
+                    streak++; localStorage.setItem("streak", streak);
+                    alert("QUESTS COMPLETED!");
+                }
+                saveData(); updateUI(); renderTasks();
+            };
+            list.appendChild(li);
+        });
+    }
+
+    function saveData() {
+        localStorage.setItem("xp", xp);
+        localStorage.setItem("statStr", str);
+        localStorage.setItem("statInt", intel);
+        localStorage.setItem("completed", JSON.stringify(completed));
+    }
+
+    function switchPage(pId, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(pId).classList.remove('hidden');
+        el.classList.add('active');
+        const isQuest = pId === 'questPage';
+        document.getElementById("mainHeader").classList.toggle('hidden', !isQuest);
+        document.getElementById("daysStrip").classList.toggle('hidden', !isQuest);
+        document.getElementById("streakBadge").classList.toggle('hidden', !isQuest);
+    }
+
+    let tInt, tLeft, tActive = false;
+    function handleTimer() {
+        const btn = document.getElementById("tBtn");
+        if(!tActive) {
+            tLeft = document.getElementById("userMins").value * 60;
+            tActive = true; btn.innerText = "ABORT"; btn.style.background = "#ff4444";
+            tInt = setInterval(() => {
+                tLeft--;
+                let m = Math.floor(tLeft/60), s = tLeft%60;
+                document.getElementById("countdownDisplay").innerText = `${m}:${s<10?'0'+s:s}`;
+                if(tLeft <= 0) { 
+                    clearInterval(tInt); tActive=false; 
+                    intel+=10; xp+=10; // 10 XP for timer
+                    saveData(); updateUI(); alert("FOCUS COMPLETE! +10 XP");
+                    btn.innerText = "ENGAGE"; btn.style.background = "var(--primary)";
+                }
+            }, 1000);
+        } else { clearInterval(tInt); tActive=false; btn.innerText = "ENGAGE"; btn.style.background = "var(--primary)"; }
+    }
+    window.onload = () => { updateUI(); renderTasks(); };
+</script>
 </body>
 </html>
