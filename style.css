@@ -1,92 +1,161 @@
 body {
-  margin: 0;
-  background: #0b0b0b;
-  color: white;
-  font-family: Arial, sans-serif;
+    background-color: #050505;
+    color: white;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: 15px;
 }
 
-.app {
-  padding: 20px;
-  text-align: center;
+.app { width: 100%; max-width: 400px; }
+
+.logo {
+    color: #ff0000;
+    text-shadow: 0 0 15px #ff0000;
+    font-size: 2.2rem;
+    margin: 10px 0;
+    text-align: center;
+    letter-spacing: 2px;
 }
 
-h1 {
-  color: red;
-  text-shadow: 0 0 12px red;
+/* Top Bar Streaks */
+.top-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-.time-box {
-  color: #ccc;
+.streak-group {
+    display: flex;
+    gap: 10px;
 }
 
-#dayText {
-  color: #ff4d4d;
-  margin: 12px 0;
-  font-weight: bold;
+.badge {
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #111;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
+.streak { color: #ffaa00; border-color: #ffaa00; box-shadow: 0 0 8px rgba(255,170,0,0.3); }
+.highest { color: #00ccff; border-color: #00ccff; box-shadow: 0 0 8px rgba(0,204,255,0.3); }
 
-li {
-  background: #151515;
-  border: 1px solid red;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.xp {
-  color: #ff3333;
-  font-size: 18px;
-}
-
+/* Day Strip */
 .day-strip {
-  display: flex;
-  margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    margin-bottom: 25px;
 }
 
 .day-strip div {
-  flex: 1;
-  margin: 3px;
-  padding: 10px 0;
-  background: #111;
-  color: #aaa;
-  border-radius: 10px;
+    flex: 1;
+    background: #111;
+    padding: 12px 5px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #555;
+    border: 1px solid #222;
+    line-height: 1.4;
 }
 
 .day-strip .active {
-  background: #1e90ff;
-  color: white;
-  box-shadow: 0 0 10px #1e90ff;
+    background: #0055ff;
+    color: white;
+    border-color: #00ccff;
+    box-shadow: 0 0 15px rgba(0, 85, 255, 0.6);
+    font-weight: bold;
 }
 
-.streak {
-  color: #ffaa00;
-  font-weight: bold;
-  margin-top: 15px;
+/* Status Card */
+.status-card {
+    background: #111;
+    padding: 18px;
+    border-radius: 15px;
+    border: 1px solid #333;
+    margin-bottom: 25px;
 }
 
-.level-rank {
-  color: #33ff33;
-  font-weight: bold;
-  margin-top: 15px;
+.status-row {
+    display: flex;
+    justify-content: space-around;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 12px;
 }
+
+.progress-container {
+    width: 100%;
+    height: 12px;
+    background: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff4400, #ffcc00);
+    box-shadow: 0 0 10px #ff4400;
+    transition: width 0.5s ease-out;
+}
+
+.xp-mini {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #ff4444;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Quest Label */
+.quest-label {
+    font-size: 1rem;
+    color: #ff4444;
+    text-align: center;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 5px rgba(255,68,68,0.3);
+}
+
+/* Task Boxes with RED OUTLINE */
+ul { padding: 0; list-style: none; }
+
+li {
+    background: #0a0a0a;
+    margin-bottom: 12px;
+    padding: 18px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ff0000; /* Red Outline Added */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+li:active { transform: scale(0.98); }
 
 .check-box {
-  width: 18px;
-  height: 18px;
-  border: 2px solid red;
-  border-radius: 4px;
-  cursor: pointer;
-  box-shadow: 0 0 6px red;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ff0000;
+    border-radius: 6px;
+    cursor: pointer;
+    background: rgba(255,0,0,0.05);
 }
 
-.check-box:hover {
-  background: red;
+.completed-text {
+    color: #555 !important;
+    text-decoration: line-through;
+}
+
+.completed-box {
+    border-color: #333 !important;
+    background: transparent;
 }
