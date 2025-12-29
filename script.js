@@ -35,13 +35,13 @@ updateStreak();
 
 // ================= ROUTINE SYSTEM =================
 const routines = [
-  ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
-  ["Push-ups 30", "Bicep curl 40", "Tricep dips 20", "Study 30 min (4 blocks)"],
-  ["Crunches (15×3)", "Leg Raise (12×3)", "Plank 30 sec (3 sets)", "Study 30 min (4 blocks)"],
-  ["Crunches (15×3)", "Leg Raise (12×3)", "Plank 30 sec (3 sets)", "Study 30 min (4 blocks)"],
-  ["Squats (15×3)", "Step-Ups (10×3)", "Calf Raises (20×3)", "Study 30 min (4 blocks)"],
-  ["Squats (15×3)", "Step-Ups (10×3)", "Calf Raises (20×3)", "Study 30 min (4 blocks)"],
-  ["Rest Today", "Study 30 min (5 blocks)"],
+  ["Rest", "Study: 30 mins (5 blocks)"],
+  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30mins(4 Blocks)"],
+  ["Push-Ups: 30", "Bicep Curls: 40", "Triceps Dips: 20", "Study: 30mins(4 Blocks)"],
+  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Planks: (30sec ×3)", "Study: 30mins(4Blocks)"],
+  ["Crunches: (15×3)", "Leg Raise: (12×3)", "Planks: (30sec ×3)", "Study: 30mins(4Blocks)"],
+  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf-Raises: (20×3)", "Study: 30mins (4Blocks)"],
+  ["Squats: (15×3)", "Step-Ups: (10×3)", "Calf-Raises: (20×3)", "Study: 30mins (4Blocks)"],
 ];
 
 const today = new Date().toDateString();
