@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PROTOCOL-01 | Arise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #00d2ff;
@@ -12,12 +13,46 @@
             --card: #0d1117;
             --text-dim: #555;
             --rank-color: #ffffff;
+            --penalty: #ff4444;
         } 
         body { background-color: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
-        .app { width: 100%; max-width: 400px; padding: 20px; padding-bottom: 100px; }
-        .header-section { text-align: center; margin-bottom: 20px; }
-        .logo { color: var(--primary); text-shadow: 0 0 30px rgba(0, 210, 255, 0.6); font-size: 3rem; font-weight: 900; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
-        .rank-badge-top { font-size: 1.2rem; font-weight: 900; color: var(--rank-color); text-shadow: 0 0 15px var(--rank-color); margin: 5px 0; letter-spacing: 2px; text-transform: uppercase; }
+        .app { width: 100%; max-width: 400px; padding: 20px; padding-bottom: 100px; position: relative; }
+        
+        .header-section { text-align: center; margin-bottom: 30px; position: relative; padding-top: 10px; }
+        .logo-box {
+            display: inline-block;
+            border: 2px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4), inset 0 0 15px rgba(0, 210, 255, 0.2);
+            background: rgba(0, 210, 255, 0.05);
+            margin-bottom: 35px;
+        }
+        .logo { color: var(--primary); text-shadow: 0 0 15px rgba(0, 210, 255, 0.8); font-size: 1.8rem; font-weight: 900; margin: 0; letter-spacing: 4px; text-transform: uppercase; }
+        
+        .signature { 
+            position: absolute; 
+            left: 50%; transform: translateX(-50%); top: 75px; 
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem; color: var(--primary); text-shadow: 0 0 8px var(--primary);
+            opacity: 0.9; width: 100%;
+        }
+
+        /* Motivation Box Style */
+        .system-msg-box {
+            background: rgba(0, 210, 255, 0.05);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+        }
+
+        .rank-badge-top { font-size: 1.1rem; font-weight: 900; color: var(--rank-color); text-shadow: 0 0 15px var(--rank-color); margin: 10px 0 5px 0; letter-spacing: 2px; text-transform: uppercase; }
         .days-strip { display: flex; justify-content: space-around; background: #111; padding: 12px 5px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
         .day { font-size: 0.75rem; color: var(--text-dim); font-weight: 800; }
         .day.active-day { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
@@ -26,6 +61,7 @@
         .status-header { display: flex; justify-content: space-around; font-weight: bold; font-size: 1rem; }
         .progress-container { width: 100%; height: 8px; background: #000; border-radius: 10px; margin-top: 15px; overflow: hidden; }
         .progress-bar { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s; }
+        
         ul { padding: 0; list-style: none; }
         li { background: #0d1117; margin-bottom: 12px; padding: 18px; border-radius: 15px; display: flex; justify-content: space-between; border-left: 4px solid var(--primary); align-items: center; cursor: pointer; }
         .completed-item { opacity: 0.2; filter: grayscale(1); border-left-color: #333 !important; }
@@ -33,10 +69,15 @@
         .completed-item .check-box { background: var(--primary); }
         .player-card { border: 2px solid var(--rank-color) !important; text-align: center; }
         .stat-label { color: var(--text-dim); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .timer-header { color: var(--primary); letter-spacing: 4px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; text-align: center; }
         .timer-box { background: rgba(255,255,255,0.02); padding: 40px 20px; border-radius: 30px; text-align: center; border: 1px solid #222; }
         #countdownDisplay { font-size: 4.5rem; font-family: monospace; text-shadow: 0 0 25px var(--primary); margin-bottom: 20px; }
         .timer-input { background: #000; border: 1px solid var(--primary); color: white; padding: 10px; width: 60px; text-align: center; border-radius: 10px; font-size: 1.1rem; }
-        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; }
+        .timer-controls { display: flex; gap: 10px; justify-content: center; }
+        .btn-main { border:none; padding:15px 25px; border-radius:12px; font-weight:900; color:black; cursor:pointer; flex: 1; }
+
+        .nav-bar { position: fixed; bottom: 0; width: 100%; max-width: 400px; background: #000; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
         .nav-item { text-align: center; color: #444; cursor: pointer; font-size: 0.75rem; }
         .nav-item.active { color: var(--primary); }
         .hidden { display: none !important; }
@@ -46,7 +87,8 @@
 
     <div class="app">
         <div id="mainHeader" class="header-section">
-            <h1 class="logo">PROTOCOL-01</h1>
+            <div class="logo-box"><h1 class="logo">PROTOCOL-01</h1></div>
+            <div class="signature">made by devil's knock</div>
             <div id="rankBadgeTop" class="rank-badge-top">RANK E</div>
         </div>
 
@@ -57,6 +99,10 @@
         <div id="streakBadge" class="streak-badge">🔥 STREAK: <span id="streakVal">0</span> DAYS</div>
 
         <div id="questPage" class="page">
+            <div id="motivationMsg" class="system-msg-box">
+                [SYSTEM]: Loading daily parameters...
+            </div>
+
             <div class="status-card">
                 <div class="status-header">
                     <span>LVL: <span id="level">1</span></span>
@@ -64,18 +110,22 @@
                 </div>
                 <div class="progress-container"><div id="progressBar" class="progress-bar"></div></div>
             </div>
-            <h3 id="dayTitle" style="color:var(--secondary); text-align:center; margin-bottom:15px; font-size:0.8rem; letter-spacing:2px; text-transform: uppercase;"></h3>
+            <p style="color:var(--penalty); font-size:0.6rem; text-align:center; font-weight:bold; margin-bottom:10px;">[!] 1 DAY MISS = STREAK 0 | 3 DAYS = XP 0</p>
             <ul id="taskList"></ul>
         </div>
 
         <div id="timerPage" class="page hidden">
+            <h2 class="timer-header">FOCUS PROTOCOL</h2>
             <div class="timer-box">
                 <div id="tInputArea" style="margin-bottom: 20px;">
                     <span style="font-size: 0.8rem; color: var(--text-dim);">FOCUS DURATION (MIN)</span><br><br>
-                    <input type="number" id="userMins" class="timer-input" value="25">
+                    <input type="number" id="userMins" class="timer-input" value="30">
                 </div>
-                <div id="countdownDisplay">25:00</div>
-                <button onclick="handleTimer()" id="tBtn" style="background:var(--primary); border:none; padding:15px 45px; border-radius:12px; font-weight:900; color:black;">ENGAGE</button>
+                <div id="countdownDisplay">30:00</div>
+                <div class="timer-controls">
+                    <button onclick="handleTimer()" id="tBtn" class="btn-main" style="background:var(--primary);">ENGAGE</button>
+                    <button onclick="togglePause()" id="pauseBtn" class="btn-main hidden" style="background:#eee;">PAUSE</button>
+                </div>
             </div>
         </div>
 
@@ -103,11 +153,25 @@
     </div>
 
 <script>
-    // --- FORCE RESET LOGIC (One-time use) ---
-    if(!localStorage.getItem("systemCleaned_v2")) {
-        localStorage.clear();
-        localStorage.setItem("systemCleaned_v2", "true");
-    }
+    const baseTasks = {
+        0: [{n: "Rest Day", t: "STR", v: 1}, {n: "Study: 30m (5 Blocks)", t: "INT", v: 1}],
+        1: [{n: "Push-Ups", t: "STR", v: 30}, {n: "Bicep Curls", t: "STR", v: 40}, {n: "Triceps Dips", t: "STR", v: 20}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}],
+        2: [{n: "Push-Ups", t: "STR", v: 30}, {n: "Bicep Curls", t: "STR", v: 40}, {n: "Triceps Dips", t: "STR", v: 20}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}],
+        3: [{n: "Crunches (15x3)", t: "STR", v: 45}, {n: "Leg Raise (12x3)", t: "STR", v: 36}, {n: "Planks (30s x3)", t: "STR", v: 90}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}],
+        4: [{n: "Crunches (15x3)", t: "STR", v: 45}, {n: "Leg Raise (12x3)", t: "STR", v: 36}, {n: "Planks (30s x3)", t: "STR", v: 90}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}],
+        5: [{n: "Squats (15x3)", t: "STR", v: 45}, {n: "Step-Ups (10x3)", t: "STR", v: 30}, {n: "Calf-Raises (20x3)", t: "STR", v: 60}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}],
+        6: [{n: "Squats (15x3)", t: "STR", v: 45}, {n: "Step-Ups (10x3)", t: "STR", v: 30}, {n: "Calf-Raises (20x3)", t: "STR", v: 60}, {n: "Study: 30m (4 Blocks)", t: "INT", v: 1}]
+    };
+
+    const quotes = [
+        "A weak mind leads to a weak body. Strengthen both.",
+        "The system has chosen you. Do not disappoint it.",
+        "Every rep is a step closer to becoming the Monarch.",
+        "Limits are for those who don't have a Protocol.",
+        "Pain is temporary. Leveling up is forever.",
+        "The only way to survive is to get stronger.",
+        "Your future self is watching. Give them a reason to be proud."
+    ];
 
     const ranks = [
         { name: "RANK E", minLvl: 1, color: "#ffffff", multiplier: 1 },
@@ -118,26 +182,33 @@
         { name: "RANK S", minLvl: 51, color: "#ef4444", multiplier: 5 }
     ];
 
-    const baseTasks = {
-        0: [{n: "Rest Day", t: "INT", v: 1}, {n: "Read", t: "INT", v: 15}, {n: "Plan", t: "INT", v: 1}],
-        1: [{n: "Pushups", t: "STR", v: 30}, {n: "Pullups", t: "STR", v: 5}, {n: "Dips", t: "STR", v: 10}],
-        2: [{n: "Squats", t: "STR", v: 30}, {n: "Lunges", t: "STR", v: 20}, {n: "Plank(S)", t: "STR", v: 60}],
-        3: [{n: "Study(M)", t: "INT", v: 45}, {n: "DSA", t: "INT", v: 1}, {n: "News", t: "INT", v: 1}],
-        4: [{n: "Burpees", t: "STR", v: 15}, {n: "Shadow Box", t: "STR", v: 5}, {n: "Jumps", t: "STR", v: 20}],
-        5: [{n: "Deadlift", t: "STR", v: 10}, {n: "Biceps", t: "STR", v: 15}, {n: "Hammers", t: "STR", v: 15}],
-        6: [{n: "Meditate", t: "INT", v: 10}, {n: "Yoga", t: "INT", v: 1}, {n: "Walk(KM)", t: "STR", v: 3}]
-    };
-
     let xp = parseInt(localStorage.getItem("xp")) || 0;
     let str = parseInt(localStorage.getItem("statStr")) || 0;
     let intel = parseInt(localStorage.getItem("statInt")) || 0;
     let streak = parseInt(localStorage.getItem("streak")) || 0;
+    let missedDays = parseInt(localStorage.getItem("missedDays")) || 0;
     let completed = JSON.parse(localStorage.getItem("completed")) || [];
+    let lastDate = localStorage.getItem("lastDate");
 
-    if (localStorage.getItem("lastDate") !== new Date().toDateString()) {
-        completed = [];
-        localStorage.setItem("completed", JSON.stringify([]));
-        localStorage.setItem("lastDate", new Date().toDateString());
+    function checkPenalty() {
+        const today = new Date().toDateString();
+        if (lastDate && lastDate !== today) {
+            const yesterdayIdx = (new Date(lastDate).getDay());
+            if (completed.length < baseTasks[yesterdayIdx].length) {
+                streak = 0; missedDays++;
+                alert("PENALTY: MISSION FAILED!\nStreak reset to 0.");
+                if (missedDays >= 3) { xp = 0; missedDays = 0; alert("FATAL ERROR: 3 DAYS MISSED. XP RESET TO 0."); }
+            } else { missedDays = 0; }
+            completed = [];
+            localStorage.setItem("lastDate", today);
+            saveData();
+        } else if (!lastDate) { localStorage.setItem("lastDate", today); }
+    }
+
+    function setMotivation() {
+        const dayIdx = new Date().getDay();
+        const msgEl = document.getElementById("motivationMsg");
+        msgEl.innerText = `[SYSTEM]: "${quotes[dayIdx]}"`;
     }
 
     function getCurrentRank() {
@@ -173,22 +244,18 @@
         list.innerHTML = "";
         document.querySelectorAll('.day').forEach(d => d.classList.remove('active-day'));
         document.getElementById(`d-${dayIdx}`).classList.add('active-day');
-        document.getElementById("dayTitle").innerText = "DAILY QUESTS";
 
         tasks.forEach((task, i) => {
             const li = document.createElement("li");
             if(completed.includes(i)) li.classList.add("completed-item");
-            let val = Math.ceil(task.v * currentRank.multiplier);
-            li.innerHTML = `<div><small style="color:var(--primary)">${task.t}</small><br><b>${task.n}: ${val}</b></div><div class="check-box"></div>`;
+            let val = task.n.includes("Study") ? task.n : `${task.n}: ${Math.ceil(task.v * currentRank.multiplier)}`;
+            li.innerHTML = `<div><small style="color:var(--primary)">${task.t}</small><br><b>${val}</b></div><div class="check-box"></div>`;
             li.onclick = () => {
                 if(completed.includes(i)) return;
                 completed.push(i);
                 task.t === "STR" ? str += 10 : intel += 10;
-                xp += 20; // 20 XP per task
-                if(completed.length === tasks.length) {
-                    streak++; localStorage.setItem("streak", streak);
-                    alert("QUESTS COMPLETED!");
-                }
+                xp += 25;
+                if(completed.length === tasks.length) streak++;
                 saveData(); updateUI(); renderTasks();
             };
             list.appendChild(li);
@@ -199,6 +266,8 @@
         localStorage.setItem("xp", xp);
         localStorage.setItem("statStr", str);
         localStorage.setItem("statInt", intel);
+        localStorage.setItem("streak", streak);
+        localStorage.setItem("missedDays", missedDays);
         localStorage.setItem("completed", JSON.stringify(completed));
     }
 
@@ -213,26 +282,55 @@
         document.getElementById("streakBadge").classList.toggle('hidden', !isQuest);
     }
 
-    let tInt, tLeft, tActive = false;
+    // TIMER LOGIC
+    let tInt, tLeft, tActive = false, isPaused = false;
     function handleTimer() {
         const btn = document.getElementById("tBtn");
+        const pBtn = document.getElementById("pauseBtn");
         if(!tActive) {
             tLeft = document.getElementById("userMins").value * 60;
-            tActive = true; btn.innerText = "ABORT"; btn.style.background = "#ff4444";
-            tInt = setInterval(() => {
+            tActive = true; isPaused = false;
+            btn.innerText = "ABORT"; btn.style.background = "#ff4444";
+            pBtn.classList.remove('hidden'); pBtn.innerText = "PAUSE";
+            startInterval();
+        } else {
+            clearInterval(tInt); tActive = false;
+            btn.innerText = "ENGAGE"; btn.style.background = "var(--primary)";
+            pBtn.classList.add('hidden');
+            document.getElementById("countdownDisplay").innerText = document.getElementById("userMins").value + ":00";
+        }
+    }
+
+    function startInterval() {
+        tInt = setInterval(() => {
+            if(!isPaused) {
                 tLeft--;
                 let m = Math.floor(tLeft/60), s = tLeft%60;
                 document.getElementById("countdownDisplay").innerText = `${m}:${s<10?'0'+s:s}`;
                 if(tLeft <= 0) { 
                     clearInterval(tInt); tActive=false; 
-                    intel+=10; xp+=10; // 10 XP for timer
-                    saveData(); updateUI(); alert("FOCUS COMPLETE! +10 XP");
-                    btn.innerText = "ENGAGE"; btn.style.background = "var(--primary)";
+                    intel+=15; xp+=20; saveData(); updateUI();
+                    alert("PROTOCOL COMPLETE! +20 XP");
+                    resetTimerUI();
                 }
-            }, 1000);
-        } else { clearInterval(tInt); tActive=false; btn.innerText = "ENGAGE"; btn.style.background = "var(--primary)"; }
+            }
+        }, 1000);
     }
-    window.onload = () => { updateUI(); renderTasks(); };
+
+    function togglePause() {
+        const pBtn = document.getElementById("pauseBtn");
+        isPaused = !isPaused;
+        pBtn.innerText = isPaused ? "RESUME" : "PAUSE";
+        pBtn.style.background = isPaused ? "var(--primary)" : "#eee";
+    }
+
+    function resetTimerUI() {
+        document.getElementById("tBtn").innerText = "ENGAGE";
+        document.getElementById("tBtn").style.background = "var(--primary)";
+        document.getElementById("pauseBtn").classList.add('hidden');
+    }
+
+    window.onload = () => { checkPenalty(); setMotivation(); updateUI(); renderTasks(); };
 </script>
 </body>
-</html>
+    </html>
